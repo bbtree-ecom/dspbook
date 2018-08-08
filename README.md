@@ -317,3 +317,54 @@ Notice）。DSP也可以将自己的获胜通知监测地址添加在曝光监�
 | {AUCTION_TIMESTAMP}  | GMT unix timestamp, 单位为秒 |
 
 价格加密解密算法、json加密和解密算法需要技术提供
+
+
+2.4 价格加解密算法
+---------------------------
+
+加解密使用AES-256算法，IV值开通后，在管理后台中显示
+
+```golang
+
+func AESGCM_encrypt(src, stKey, stNonce string) (string, error) {
+	key := []byte(stKey)
+	plaintext := []byte(src)
+
+	block, err := aes.NewCipher(key)
+	if err != nil {
+		return "", err
+	}
+	nonce, _ := hex.DecodeString(stNonce)
+	aesgcm, err := cipher.NewGCM(block)
+	if err != nil {
+		return "", err
+	}
+	ciphertext := aesgcm.Seal(nil, nonce, plaintext, nil)
+	return fmt.Sprintf("%x", ciphertext), nil
+}
+
+func AESGCM_decrypt(src, stKey, stNonce string) (string, error) {
+	key := []byte(stKey)
+	ciphertext, _ := hex.DecodeString(src)
+
+	nonce, _ := hex.DecodeString(stNonce)
+	block, err := aes.NewCipher(key)
+	if err != nil {
+		return "", err
+	}
+
+	aesgcm, err := cipher.NewGCM(block)
+	if err != nil {
+		return "", err
+	}
+
+	plaintext, err := aesgcm.Open(nil, nonce, ciphertext, nil)
+	if err != nil {
+		panic(err.Error())
+	}
+
+	return string(plaintext), nil
+}
+
+
+```
