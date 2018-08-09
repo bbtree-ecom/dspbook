@@ -1,9 +1,11 @@
 # 智慧树ADX接入规范
 
+
+
 1.技术要求
 ==========
 
-1.2通信方式及编码
+1.1通信方式及编码
 -----------------
 
 通信协议采用HTTP协议，使用POST方法发送Bid
@@ -31,7 +33,7 @@ ADX与DSP的服务协议包括三个部分：
 
 ·3.应答：DSP向ADX返回竞价广告信息（Bid Response）
 
-·4.2获胜通知：ADX向DSP发送竞价结果（Win
+·4.获胜通知：ADX向DSP发送竞价结果（Win
 Notice）。DSP也可以将自己的获胜通知监测地址添加在曝光监测中，由客户端上报，但竞价成功到展示之间有路径损耗，需要DSP自行把控
 
 2.1 ADX向DSP发送的广告询价请求(Bid Request)
@@ -41,7 +43,7 @@ Notice）。DSP也可以将自己的获胜通知监测地址添加在曝光监�
 
 ![](http://i1.bbtree.com/park/1533193912035.png)
 
-##### 1）竞价请求接口信息（BidRequest）
+#### 1）竞价请求接口信息（BidRequest）
 
 | 字段    | 类型         | 默认值 | 必填 | 备注                                                                 |
 |---------|--------------|--------|------|----------------------------------------------------------------------|
@@ -49,22 +51,22 @@ Notice）。DSP也可以将自己的获胜通知监测地址添加在曝光监�
 | app     | object       |        | 是   | 应用信息                                                             |
 | device  | object       |        | 是   | Device对象。设备信息                                                 |
 | geo     | obiect       |        | 否   | Geo对象。地理位置信息                                                |
-| imp     | abject array |        | 是   | Imp对象。描述正在拍卖的广告展示位置。一个出价请求可以包含多个Imp对象 |
+| imp     | object array |        | 是   | Imp对象。描述正在拍卖的广告展示位置。一个出价请求可以包含多个Imp对象 |
 | pmp     | object       |        | 否   | PMP对象。约定PMP交易信息                                             |
 | user    | object       |        | 否   | User对象。用户信息                                                   |
 | version | int32        |        | 是   | 当前协议版本号                                                       |
-| bcat    | object array |        | 否   | 禁投的广告主行业，参见iab中的5.1节-广告主行业列表                    |
+| bcat    | string array |        | 否   | 禁投的广告主行业，参见iab中的5.1节-广告主行业列表                    |
 | ext     | object       |        | 否   | BidRequest的扩展                                                     |
 
 ##### 2）app对象（BidRequest.app）
 
-| 字段   | 类型   | 默认值 | 必填 | 备注                                           |
-|--------|--------|--------|------|------------------------------------------------|
-| id     | string |        | 是   | 应用ID                                         |
-| name   | string |        | 是   | 应用名称, 例：“智慧树家长版”                   |
-| bundle | string |        | 否   | android 设备为package name；ios应用为bundle id |
-| ver    | string |        | 否   | 应用版本                                       |
-| cat[]  | string |        | 否   | 应用类型                                       |
+| 字段   | 类型            | 默认值 | 必填 | 备注                                           |
+|--------|-----------------|--------|------|------------------------------------------------|
+| id     | string          |        | 是   | 应用ID                                         |
+| name   | string          |        | 是   | 应用名称, 例：“智慧树家长版”                   |
+| bundle | string          |        | 否   | android 设备为package name；ios应用为bundle id |
+| ver    | string          |        | 否   | 应用版本                                       |
+| cat    | array of string |        | 否   | 应用类型                                       |
 
 ##### 3）device对象（BidRequest.Device）
 
@@ -117,7 +119,7 @@ Notice）。DSP也可以将自己的获胜通知监测地址添加在曝光监�
 | ad_type        | int            |                | 是   | 1：banner，2：开屏，3：原生                                                                                                    |
 | banner         | object         |                | 否   | Banner对象，适用于banner、开屏，用于描述广告位信息                                                                             |
 | video          | object         |                | 否   | video对象                                                                                                                      |
-| native         | object         |                | 否   | Native对象。banner、video、native在一个imp下有且只有一个                                                                       |
+| native         | object         |                | 否   | Native对象。video、native在一个imp下有且只有一个                                                                               |
 | tagid          | string         |                | 是   | 广告位id                                                                                                                       |
 | mimes          | arry of string | [“image/jpeg”] | 是   | 支持的素材类型数组                                                                                                             |
 | support_aciton | 枚举           | [1]            | 否   | 广告动作类型， 1: 在app内webview打开目标链接， 2： 在系统浏览器打开目标链接, 3：打开地图，4： 拨打电话，5：播放视频, 6:App下载 |
@@ -173,6 +175,12 @@ Notice）。DSP也可以将自己的获胜通知监测地址添加在曝光监�
 | 字段名称 | 类型 | 默认值 | 必须 | 描述                  |
 |----------|------|--------|------|-----------------------|
 | len      | int  |        | 否   | title元素最大文字长度 |
+
+原生广告video（BidRequest.Impression.native.assets.video）
+
+| 字段名称    | 类型 | 默认值 | 必须 | 描述               |
+|-------------|------|--------|------|--------------------|
+| maxduration | int  |        | 否   | 最长时间，单位：秒 |
 
 原生广告data（BidRequest.Impression.native.assets.data）
 
@@ -250,10 +258,10 @@ Notice）。DSP也可以将自己的获胜通知监测地址添加在曝光监�
 | cat            | string arry  |                | 否   | 广告类别，详见[IAB §6.1](http://www.iab.net/media/file/OpenRTB_API_Specification_Version2.0_FINAL.PDF)                                                                              |
 | adm            | string       |                | 否   | 视频广告物料必填。 视频素材必须符合VAST 3.0规范，请参看[VAST 3.0 标准](http://www.iab.com/wp-content/uploads/2015/06/VASTv3_0.pdf)                                                  |
 | admnative      | object       |                | 否   | 当请求为原生广告时，必须使用该对象响应                                                                                                                                              |
-| clickurl       | string       |                | 否   | 广告点击跳转地址，允许使用[宏](https://www.zybuluo.com/mdeditor#BID_MACRO)，例<https://www.aaa.com/appu/>{AUCTION_BID_ID}                                                           |
-| deeplink       | string       |                | 否   | 广告点击deeplink链接。在deeplink不为空的情况下，会先访问deplink，如果唤起失败，则按照iOS按照bundle、clickurl的优先级请求；Android按照clickurl地址请求                               |
-| imptrackers[]  | string array |                | 否   | 曝光追踪地址，允许有多个追踪地址，允许使用[宏](https://www.zybuluo.com/mdeditor#BID_MACRO)                                                                                          |
-| clktrackers[]  | string array |                | 否   | 点击追踪地址，允许有多个追踪地址，允许使用[宏](https://www.zybuluo.com/mdeditor#BID_MACRO)                                                                                          |
+| clickurl       | string       |                | 否   | 广告点击跳转地址，允许使用[宏](https://www.zybuluo.com/mdeditor#BID_MACRO)，例[http://www..cn/ad/](http://www.zplay.cn/ad/){AUCTION_BID_ID}                                         |
+| deeplink       | string       |                | 否   | 广告点击deeplink链接，在deeplink和clickurl同时存在的况下，会先访问deplink，如果唤起失败，则打开clickurl                                                                             |
+| imptrackers    | string array |                | 否   | 曝光追踪地址，允许有多个追踪地址，允许使用[宏](https://www.zybuluo.com/mdeditor#BID_MACRO)                                                                                          |
+| clktrackers    | string array |                | 否   | 点击追踪地址，允许有多个追踪地址，允许使用[宏](https://www.zybuluo.com/mdeditor#BID_MACRO)                                                                                          |
 | html_snippet   | string array |                | 否   | html广告代码                                                                                                                                                                        |
 | inventory_type | string array | [“image/jpeg”] | 否   | 返回的素材广告类型，必须与请求在请求中素材类型以内                                                                                                                                  |
 | title          | string       |                | 否   | 图文广告中的标题。                                                                                                                                                                  |
@@ -305,7 +313,9 @@ Notice）。DSP也可以将自己的获胜通知监测地址添加在曝光监�
 获取到的结算价格，是经过加密后的结算价格，每个DSP
 有一个唯一的token，请联系ADX团队获取，并妥善保管。
 
-目前支持的宏如下（内部沟通时需要确认支持的可能性）：
+DSP平台可根据自己的需要在链接中加入宏字段。
+
+目前支持的宏如下：
 
 | 字段                 | 含义                         |
 |----------------------|------------------------------|
@@ -316,13 +326,67 @@ Notice）。DSP也可以将自己的获胜通知监测地址添加在曝光监�
 | {AUCTION_SEAT \_ID } | 参与竞价的DSP方bidder id     |
 | {AUCTION_TIMESTAMP}  | GMT unix timestamp, 单位为秒 |
 
-价格加密解密算法、json加密和解密算法需要技术提供
+##### 价格加密解密算法说明：
+
+价格加密采用AES加密算法，算法的key为DSP的token，算法的iv请联系ADX获取。
+
+2.4 示例
+--------
+
+##### 1）Banner 示例
+
+请求banner广告，响应时将广告素材图片的URL填充到Bid的iurl字段，宽、高填充到Bid的w、h字段。暂不支持响应为html格式。
+
+BidRequest：
+
+``` json
+
+{ "bidid": "shdihdkashdka11001", "app": { "id": "zhihuishu", "name": "智慧树家长端", "bundle": "package name", "ver": "P_Build_6.6.5", "cat": [ "Education", "Family & Parenting" ] }, "device": { "os": "Android", "ua": "Mozilla/5.0 (iPhone; CPU iPhone OS 11_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E302 bbtree_P/6.6.5 /sa-sdk-ios/sensors-verify/shence-api-uniq.bbtree.com?default ", "language": "zh-ch", "dnt": false, "osversion": "iOS 11.3.1", "make": "Apple", "model": "apple", "ip": "", "hwv": "iPhone9,1", "w": 750, "h": 1334, "ppi": 0, "conntype": 4, "devicetype": 4, "imei": "", "mac": "", "android_id": "", "adid": "9F8C4844-80DB-4946-A78B-241017CAD2A9", "didsha1": "", "dpidsha1": "", "macsha1": "", "plmn": "46000", "orientation": "1" }, "geo": { "lat": 0, "lng": 0, "country": "china", "region": "", "city": "", "location_type": 2, "accuracy": 0, "street": "" }, "imp": [ // 广告展示，可以有多个，以id 区分，暂时只有一个 { "id": "1", "bidfloor": 16, "bidfloorcur": "CNY", "ad_type": 1, "banner": { // 要求banner广告 "w": 750, "h": 1334, "pos": 0 }, "video": null, "native": null, "tagid": "11001", "mimes": [ "image/jpeg" ], "support_action": 1 } ], "pmp": null, "user": null, "version": 11, "bcat": null, "ext": null } 
+
+``` 
+
+BidResponse：
+
+``` json
+
+ { "bidid": "shdihdkashdka11001", "seatbid": [ { "bid": [ // 针对imp id 为1 的出价， 注意impid 字段 { "id": "e4d7b46d-db50-43f4-b4ea-c114c81d0064", "impid": "1", // 跟request 里的imp id 相对应。 "price": 258, "deadid": "", "adid": "640855a7-e907-479b-ab29-4a1ad5802674", "nurl": "https://www.baidu.com/s?bidid={AUCTION_BID_ID}&bidprice={AUCTION_BID_PRICE}&impid={AUCTION_IMP_ID}&price={AUCTION_PRICE}&seatid={AUCTION_SEAT_ID}&time={AUCTION_TIMESTAMP}", "bundle": "", "iurl": "https://ad5.bbtree.com/ad-test/zTb9gMqecj7_1530848062503.jpg", "w": 0, "h": 0, "cat": [ "Education", "Family & Parenting" ], "adm": "", "admnative": [ ], "clickurl": "https://www.baidu.com/s?bidid={AUCTION_BID_ID}&bidprice={AUCTION_BID_PRICE}&price={AUCTION_PRICE}", "deeplink": "", "imptrackers": [ "https://www.baidu.com/s?wd=pv" ], "clktrackers": [ "https://www.baidu.com/s?wd=click" ], "html_snippet": [ ], "inventory_type": [ "image/jpeg" ], "title": "dspmock bid responce", "description": "impid :1, bidid :e4d7b46d-db50-43f4-b4ea-c114c81d0064, adid: 640855a7-e907-479b-ab29-4a1ad5802674", "action": 2 } ], "seat": "68504472-3f2e-469d-819c-1d1eee726cec", "group": 0, "ext": null } ], "nbr": 0 }
+ 
+``` 
 
 
-2.4 价格加解密算法
+##### 2）native 示例
+
+BidRequest：
+
+```  json
+
+{ "bidid": "shdihdkashdka11001", "app": { "id": "zhihuishu", "name": "智慧树家长端", "bundle": "package name", "ver": "P_Build_6.6.5", "cat": [ "Education", "Family \\u0026 Parenting" ] }, "device": { "os": "Android", "ua": "Mozilla/5.0 (iPhone; CPU iPhone OS 11_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E302 bbtree_P/6.6.5 /sa-sdk-ios/sensors-verify/shence-api-uniq.bbtree.com?default ", "language": "zh-ch", "dnt": false, "osversion": "iOS 11.3.1", "make": "Apple", "model": "apple", "ip": "", "hwv": "iPhone9,1", "w": 750, "h": 1334, "ppi": 0, "conntype": 4, "devicetype": 4, "imei": "", "mac": "", "android_id": "", "adid": "9F8C4844-80DB-4946-A78B-241017CAD2A9", "didsha1": "", "dpidsha1": "", "macsha1": "", "plmn": "46000", "orientation": "1" }, "geo": { "lat": 0, "lng": 0, "country": "china", "region": "", "city": "", "location_type": 2, "accuracy": 0, "street": "" }, "imp": [ { "id": "1", "bidfloor": 0, "bidfloorcur": "CNY", "ad_type": 3, "banner": null, "video": null, "native": { // native请求 "layout": 1, "assets": [ { "id": 1, // 资源1 "required": true, "img": { "type": 3, "w": 400, "h": 300 }, "title": null, "video": null, "data": null }, { "id": 2, // 资源2 "required": true, "img": null, "title": { "len": 15 }, "video": null, "data": null }, { "id": 3, // 资源3 "required": true, "img": null, "title": null, "video": { "maxduration": 300 }, "data": null }, { "id": 4, // 资源4 "required": true, "img": null, "title": null, "video": null, "data": { "type": 1, "len": 1 } } ] }, "tagid": "11001", "mimes": [ "image/jpeg" ], "support_action": 1 } ], "pmp": null, "user": null, "version": 11, "bcat": null, "ext": null }
+``` 
+
+
+Bidresponse:
+
+```json
+
+ { "bidid": "shdihdkashdka11001", "seatbid": [ { "bid": [ // 针对imp id 为1的出价，注意impid字段 { "id": "8ac27959-1e85-4492-8685-6930f74b6892", "impid": "1", // 跟request里的imp id 相对应 "price": 1075, "deadid": "", "adid": "625f22a5-5def-4552-840d-1e2c1c49e56a", "nurl": "https://www.baidu.com/s?bidid={AUCTION_BID_ID}&bidprice={AUCTION_BID_PRICE}&impid={AUCTION_IMP_ID}&price={AUCTION_PRICE}&seatid={AUCTION_SEAT_ID}&time={AUCTION_TIMESTAMP}", "bundle": "", "iurl": "", "w": 0, "h": 0, "cat": [ "Education", "Family & Parenting" ], "adm": "", "admnative": [ { "id": 1, // 资源1，与request一一对应 "img": { "url": "https://ad5.bbtree.com/ad-test/zTb9gMqecj7_1530848062503.jpg", "w": 400, "h": 300 }, "title": null, "video": null, "data": null }, { "id": 2, // 资源2，与request一一对应 "img": null, "title": { "title": "this is a dspmock title" }, "video": null, "data": null }, { "id": 3, // 资源3，与request一一对应 "img": null, "title": null, "video": { "video": "https://filesystem1.bbtree.com/mp/PNmDms62MA1489571339168.mp4" }, "data": null }, { "id": 4, // 资源4，与request一一对应 "img": null, "title": null, "video": null, "data": { "type": 1, "label": "description", "value": "description" } } ], "clickurl": "https://www.baidu.com/s?bidid={AUCTION_BID_ID}&bidprice={AUCTION_BID_PRICE}&price={AUCTION_PRICE}", "deeplink": "", "imptrackers": [ "https://www.baidu.com/s?wd=pv" ], "clktrackers": [ "https://www.baidu.com/s?wd=click" ], "html_snippet": [ ], "inventory_type": [ "image/jpeg" ], "title": "dspmock bid responce", "description": "impid :1, bidid :8ac27959-1e85-4492-8685-6930f74b6892, adid: 625f22a5-5def-4552-840d-1e2c1c49e56a", "action": 2 } ], "seat": "b47dce30-5d9c-48a1-ba2b-58332d65aef4", "group": 0, "ext": null } ], "nbr": 0 }
+``` 
+ 
+2.5 沙盒测试
+------------
+
+智慧树提供了用于接入方测试自己dsp接口的链接，地址为：http://dsp.bbtree.com
+
+页面上“竞价地址”一项填写接入方dsp接口url。
+
+
+
+2.6 价格加解密算法
 ---------------------------
 
-加解密使用AES-256算法，IV值开通后，在管理后台中显示
+加解密使用AES-256算法，IV值开通后，在管理后台中显示
+
+
+golang示例：
 
 ```golang
 
@@ -368,3 +432,17 @@ func AESGCM_decrypt(src, stKey, stNonce string) (string, error) {
 
 
 ```
+
+java代码示例：
+```java
+
+待补充
+```
+
+
+php代码示例：
+```php
+待补充
+
+```
+
