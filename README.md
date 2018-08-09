@@ -29,11 +29,11 @@ Content-Type: application/json。
 
 ADX与DSP的服务协议包括三个部分：
 
-·2.询价请求：ADX向DSP发送竞价请求（Bid Request）
+* 询价请求：ADX向DSP发送竞价请求（Bid Request）
 
-·3.应答：DSP向ADX返回竞价广告信息（Bid Response）
+* 应答：DSP向ADX返回竞价广告信息（Bid Response）
 
-·4.获胜通知：ADX向DSP发送竞价结果（Win
+* 获胜通知：ADX向DSP发送竞价结果（Win
 Notice）。DSP也可以将自己的获胜通知监测地址添加在曝光监测中，由客户端上报，但竞价成功到展示之间有路径损耗，需要DSP自行把控
 
 2.1 ADX向DSP发送的广告询价请求(Bid Request)
