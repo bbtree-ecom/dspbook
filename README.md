@@ -436,7 +436,37 @@ func AESGCM_decrypt(src, stKey, stNonce string) (string, error) {
 java代码示例：
 ```java
 
-待补充
+import org.apache.commons.codec.binary.Hex;
+
+import javax.crypto.Cipher;
+import javax.crypto.spec.GCMParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
+import java.nio.charset.StandardCharsets;
+
+
+public class AESGCMHelper {
+
+    public static String encrypt(String key, String sIv, String data) throws Exception {
+        Cipher cipher = initCipher(Cipher.ENCRYPT_MODE, key, sIv);
+        byte[] encrypt = cipher.doFinal(data.getBytes());
+        return Hex.encodeHexString(encrypt);
+    }
+
+    public static String decrypt(String key, String sIv, String data) throws Exception {
+        Cipher cipher = initCipher(Cipher.DECRYPT_MODE, key, sIv);
+        byte[] os = Hex.decodeHex(data.toCharArray());
+        return new String(cipher.doFinal(os), StandardCharsets.UTF_8);
+    }
+
+    private static Cipher initCipher(int mode, String key, String iv) throws Exception {
+        Cipher cipher =  Cipher.getInstance("AES/GCM/NoPadding", "SunJCE");
+        cipher.init(mode, new SecretKeySpec(key.getBytes(), "AES"), new GCMParameterSpec(128, (byte[]) new Hex().decode(iv)));
+        return cipher;
+    }
+
+}
+
+
 ```
 
 
