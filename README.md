@@ -383,12 +383,23 @@ Bidresponse:
 2.6 价格加解密算法
 ---------------------------
 
-加解密使用AES-256算法，IV值开通后，在管理后台中显示
+加解密使用AES-256-GCM算法，IV值在管理后台中显示
 
 
 golang示例：
 
 ```golang
+
+import (
+	"crypto/aes"
+	"crypto/cipher"
+	"crypto/rand"
+	"encoding/hex"
+	"fmt"
+	"net/url"
+	"strconv"
+)
+
 
 func AESGCM_encrypt(src, stKey, stNonce string) (string, error) {
 	key := []byte(stKey)
@@ -470,9 +481,34 @@ public class AESGCMHelper {
 ```
 
 
+
+python代码示例：
+
+```python
+
+from cryptography.hazmat.primitives.ciphers.aead import AESGCM
+
+
+class AESGCMHelper:
+    
+    def __init__(self, key, iv):
+        self.key = key
+        self.sIv = iv
+        self.iv = bytes(bytearray.fromhex(self.sIv))
+        self.aesgcm = AESGCM(key)
+
+    def encrypt(self, text):
+        ct = self.aesgcm.encrypt(self.iv, text, None)
+        return ct.encode("hex")
+
+    def decrypt(self, text):
+        return self.aesgcm.decrypt(self.iv, text.decode("hex"), None)
+
+```
+
+
 php代码示例：
 ```php
 待补充
 
 ```
-
